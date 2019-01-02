@@ -30,6 +30,22 @@ describe AGCOD::CreateGiftCard do
       end
     end
 
+    context "with extra options" do
+      it "makes create request" do
+        expect(AGCOD::Request).to receive(:new) do |action, params|
+          expect(action).to eq("CreateGiftCard")
+          expect(params["creationRequestId"]).to eq(request_id)
+          expect(params["value"]).to eq(
+            "currencyCode" => currency,
+            "amount" => amount
+          )
+          expect(params["programId"]).to eq("test-programId")
+        end.and_return(response)
+
+        AGCOD::CreateGiftCard.new(request_id, amount, currency, "programId" => "test-programId")
+      end
+    end
+
     context "when currency not available" do
       let(:currency) { "NOTEXIST" }
 

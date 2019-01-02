@@ -10,17 +10,19 @@ module AGCOD
 
     def_delegators :@response, :status, :success?, :error_message
 
-    def initialize(request_id, amount, currency = "USD")
+    def initialize(request_id, amount, currency = "USD", extra_params = {})
       unless CURRENCIES.include?(currency.to_s)
         raise CreateGiftCardError, "Currency #{currency} not supported, available types are #{CURRENCIES.join(", ")}"
       end
 
       @response = Request.new("CreateGiftCard",
-        "creationRequestId" => request_id,
-        "value" => {
-          "currencyCode" => currency,
-          "amount" => amount
-        }
+        extra_params.merge(
+          "creationRequestId" => request_id,
+          "value" => {
+            "currencyCode" => currency,
+            "amount" => amount
+          }
+        )
       ).response
     end
 
